@@ -1,5 +1,6 @@
 'use strict';
 
+const _ = require('lodash');
 const assert = require('assert');
 const {EventEmitter} = require('events');
 const libcups = require('printer');
@@ -21,7 +22,7 @@ class Job extends EventEmitter {
 	_update() {
 		const descriptor = this.update();
 
-		if (!this.descriptor || !utils.same(this.descriptor.status, descriptor.status)) {
+		if (!this.descriptor || !_.isEqual(this.descriptor, descriptor)) {
 			this.desciptor = descriptor;
 			this.emit('status', descriptor.status, descriptor, this);
 

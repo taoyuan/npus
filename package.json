@@ -27,6 +27,7 @@
   "dependencies": {
     "arrify": "^1.0.1",
     "bluebird": "^3.4.7",
+    "lodash": "^4.17.4",
     "node-schedule": "^1.2.0",
     "printer": "tojocky/node-printer"
   },
