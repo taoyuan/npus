@@ -8,7 +8,12 @@ class Printer {
 
 	constructor(descriptor) {
 		this.descriptor = descriptor;
-		Object.assign(this, descriptor);
+		this.name = descriptor.name;
+	}
+
+	update() {
+		this.descriptor = libcups.getPrinter(this.name);
+		return this.descriptor;
 	}
 
 	getSelectedPaperSize() {
