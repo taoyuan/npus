@@ -35,6 +35,7 @@ class Job extends EventEmitter {
 			}
 
 			if (this.is('PRINTED') || this.is('CANCELLED')) {
+				this.completed = true;
 				this.emit('complete');
 				this._schedule.cancel();
 			}
