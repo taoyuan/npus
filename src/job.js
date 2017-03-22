@@ -23,7 +23,7 @@ class Job extends EventEmitter {
 		const descriptor = this.update();
 
 		if (!this.descriptor || !_.isEqual(this.descriptor, descriptor)) {
-			this.desciptor = descriptor;
+			this.descriptor = descriptor;
 			this.emit('status', descriptor.status, descriptor, this);
 
 			if (this.is('PRINTED')) {
@@ -43,7 +43,7 @@ class Job extends EventEmitter {
 	}
 
 	is(status) {
-		const currentStatus = arrify(this.desciptor && this.desciptor.status);
+		const currentStatus = arrify(this.descriptor && this.descriptor.status);
 		if (!currentStatus.length) {
 			return false;
 		}

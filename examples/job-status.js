@@ -8,7 +8,7 @@ printer.print('print from Node.JS buffer', {
 	type: 'TEXT'	// type: RAW, TEXT, PDF, JPEG, .. depends on platform
 }).then(job => {
 	console.log("sent to printer with ID: " + job.id);
-	console.log('STATUS:', job.desciptor.status);
+	console.log('STATUS:', job.descriptor.status);
 	job.on('status', (status) => {
 		console.log('STATUS:', status);
 	});
