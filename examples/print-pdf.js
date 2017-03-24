@@ -12,6 +12,8 @@ console.log('try to print file: ' + filename);
 const printer = npus.getPrinter(printerName);
 printer.printFile(filename).then(job => {
 	console.log("sent to printer with ID: " + job.id);
+	console.log(job.status);
+	job.on('status', console.log);
 }).catch(err => {
 	console.error(err);
 });

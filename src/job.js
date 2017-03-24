@@ -19,6 +19,10 @@ class Job extends EventEmitter {
 		this._update();
 	}
 
+	get status() {
+		return this.descriptor ? this.descriptor.status : 'Unknown';
+	}
+
 	_update() {
 		const descriptor = this.update();
 

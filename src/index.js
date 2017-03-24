@@ -8,3 +8,5 @@
  */
 
 module.exports= require('./npus');
+
+// TODO Printers Management: https://bitbucket.org/joeherold/pliigo-cups-agent

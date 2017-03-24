@@ -26,6 +26,10 @@ $ npm run lint          # Lint the source code with ESLint
 $ npm test              # Lint and Run unit tests with Mocha
 ```
 
+### Reference
+
+* Printer Management [pliigo-cups-agent](https://bitbucket.org/joeherold/pliigo-cups-agent)
+
 ### License
 
 MIT © [Yuan Tao]()
