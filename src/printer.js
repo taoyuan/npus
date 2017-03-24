@@ -78,6 +78,10 @@ class Printer extends EventEmitter {
 		});
 	}
 
+	printDirect() {
+		return this.print(...arguments);
+	}
+
 	/**
 	 *
 	 * @param {String} filename data to printer
