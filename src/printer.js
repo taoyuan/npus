@@ -20,7 +20,7 @@ class Printer extends EventEmitter {
 	}
 
 	get name() {
-		return this._descriptor.name
+		return this._descriptor.name;
 	}
 
 	monit(interval) {
@@ -36,7 +36,7 @@ class Printer extends EventEmitter {
 			return this.emit('error', errs.create({
 				message: `Printer "${this.name}" is not exists or has been deleted`,
 				printer: this
-			}))
+			}));
 		}
 
 		const descriptorChanged = !_.isEqual(this._descriptor, descriptor);
@@ -45,7 +45,7 @@ class Printer extends EventEmitter {
 		if (descriptorChanged) {
 			this._descriptor = descriptor;
 			this.emit('update', descriptor, this);
-			if  (statusChanged) {
+			if (statusChanged) {
 				this.emit('status', descriptor.status, this);
 			}
 		}
