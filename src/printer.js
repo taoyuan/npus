@@ -23,6 +23,10 @@ class Printer extends EventEmitter {
 		return this._descriptor.name;
 	}
 
+	get status() {
+		return this._descriptor.status;
+	}
+
 	monit(interval) {
 		if (this._schedule && !this._schedule.isCancelled()) {
 			return this._schedule;
