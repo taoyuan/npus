@@ -27,6 +27,7 @@ exports.schedule = function (ms, fn) {
 	schedule();
 
 	return {
+		isCancelled: () => canceled,
 		cancel,
 	};
 };

@@ -1,19 +1,54 @@
 'use strict';
 
+const _ = require('lodash');
 const PromiseA = require('bluebird');
 const libcups = require('printer');
+const {EventEmitter} = require('events');
+const errs = require('errs');
 const Job = require('./job');
+const utils = require('./utils');
 
-class Printer {
+class Printer extends EventEmitter {
 
 	constructor(descriptor) {
-		this.descriptor = descriptor;
-		this.name = descriptor.name;
+		super();
+		this._descriptor = descriptor;
 	}
 
-	update() {
-		this.descriptor = libcups.getPrinter(this.name);
-		return this.descriptor;
+	get descriptor() {
+		return this._descriptor;
+	}
+
+	get name() {
+		return this._descriptor.name
+	}
+
+	monit(interval) {
+		if (this._schedule && !this._schedule.isCancelled()) {
+			return this._schedule;
+		}
+		return this._schedule = utils.schedule(interval || 1000, () => this._refresh());
+	}
+
+	_refresh() {
+		const descriptor = libcups.getPrinter(this.name);
+		if (!descriptor) {
+			return this.emit('error', errs.create({
+				message: `Printer "${this.name}" is not exists or has been deleted`,
+				printer: this
+			}))
+		}
+
+		const descriptorChanged = !_.isEqual(this._descriptor, descriptor);
+		const statusChanged = !_.isEqual(_.get(this._descriptor, 'status'), _.get(descriptor, 'status'));
+
+		if (descriptorChanged) {
+			this._descriptor = descriptor;
+			this.emit('update', descriptor, this);
+			if  (statusChanged) {
+				this.emit('status', descriptor.status, this);
+			}
+		}
 	}
 
 	getSelectedPaperSize() {
