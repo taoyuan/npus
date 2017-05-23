@@ -26,25 +26,25 @@
   "homepage": "https://github.com/taoyuan/npus#readme",
   "dependencies": {
     "arrify": "^1.0.1",
-    "bluebird": "^3.4.7",
+    "bluebird": "^3.5.0",
     "errs": "^0.3.2",
     "lodash": "^4.17.4",
     "printer": "tojocky/node-printer"
   },
   "devDependencies": {
     "chai": "^3.5.0",
-    "coveralls": "^2.11.16",
-    "eslint": "^3.15.0",
-    "eslint-config-airbnb": "^14.0.0",
+    "coveralls": "^2.13.1",
+    "eslint": "^3.19.0",
+    "eslint-config-airbnb": "^15.0.1",
     "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-mocha": "^4.8.0",
-    "eslint-plugin-react": "^6.9.0",
-    "mocha": "^3.2.0",
-    "nyc": "^10.1.2",
-    "sinon": "^1.17.7",
-    "sinon-chai": "^2.8.0",
-    "xo": "^0.17.1"
+    "eslint-plugin-jsx-a11y": "^5.0.3",
+    "eslint-plugin-mocha": "^4.9.0",
+    "eslint-plugin-react": "^7.0.1",
+    "mocha": "^3.4.1",
+    "nyc": "^10.3.2",
+    "sinon": "^2.2.0",
+    "sinon-chai": "^2.10.0",
+    "xo": "^0.18.2"
   },
   "nyc": {
     "reporter": [
