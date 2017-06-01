@@ -19,6 +19,11 @@ filename = path.resolve(process.cwd(), filename);
 console.log('printing file name ' + filename);
 
 const printer = npus.getPrinter();
+printer.start();
+printer.on('job:complete', (job) => {
+	console.log(`JOB "${job.fullid}" completed`);
+	printer.stop();
+});
 const data = fs.readFileSync(filename);
 
 try {

@@ -2,6 +2,12 @@
 
 const assert = require('assert');
 
+/**
+ *
+ * @param ms
+ * @param fn
+ * @return {{isCancelled: (function(): *), cancel: (function(): *)}}
+ */
 exports.schedule = function (ms, fn) {
 	assert(typeof ms === 'number', 'Number "ms" must be a number');
 	assert(typeof fn === 'function', 'Function "fn" is required');

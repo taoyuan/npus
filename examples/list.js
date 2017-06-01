@@ -2,4 +2,5 @@
 
 const npus = require('..');
 
-console.log(npus.list());
+const printers = npus.list();
+console.log(JSON.stringify(printers, null, 2));

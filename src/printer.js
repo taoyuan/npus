@@ -1,18 +1,20 @@
 'use strict';
 
+const debug = require('debug')('npus:printer');
 const _ = require('lodash');
 const PromiseA = require('bluebird');
 const libcups = require('printer');
 const {EventEmitter} = require('events');
 const errs = require('errs');
 const Job = require('./job');
-const utils = require('./utils');
+const schedule = require('./utils').schedule;
+const arrify = require('arrify');
 
 class Printer extends EventEmitter {
 
 	constructor(descriptor) {
 		super();
-		this._descriptor = descriptor;
+		this.update(descriptor);
 	}
 
 	get descriptor() {
@@ -27,15 +29,33 @@ class Printer extends EventEmitter {
 		return this._descriptor.status;
 	}
 
-	monit(interval) {
-		if (this._schedule && !this._schedule.isCancelled()) {
-			return this._schedule;
-		}
-		return this._schedule = utils.schedule(interval || 1000, () => this._refresh());
+	get started() {
+		return this._schedule && !this._schedule.isCancelled();
 	}
 
-	_refresh() {
-		const descriptor = libcups.getPrinter(this.name);
+	start(interval) {
+		interval = interval || 500;
+		if (!this.started) {
+			debug(`Start printer "${this.name}" with interval ${interval}ms`);
+			this._schedule = schedule(interval, () => this.update());
+		}
+	}
+
+	stop() {
+		if (this.started) {
+			debug(`Stop printer "${this.name}"`);
+			this._schedule.cancel();
+		}
+	}
+
+	toJSON() {
+		const json = _.omit(this._descriptor, 'jobs');
+		json.jobs = _.map(this.jobs, job => job.descriptor);
+		return json;
+	}
+
+	update(descriptor) {
+		descriptor = descriptor || libcups.getPrinter(this.name);
 		if (!descriptor) {
 			return this.emit('error', errs.create({
 				message: `Printer "${this.name}" is not exists or has been deleted`,
@@ -52,7 +72,30 @@ class Printer extends EventEmitter {
 			if (statusChanged) {
 				this.emit('status', descriptor.status, this);
 			}
+			this._addJob(descriptor.jobs);
 		}
+
+		_.forEach(this.jobs, job => job.update());
+	}
+
+	_addJob(data) {
+		const items = arrify(data);
+		const result = _.map(items, item => {
+			this.jobs = this.jobs || {};
+			const jobId = typeof item === 'object' ? item.id : item;
+			let job = this.jobs[jobId];
+			if (!job) {
+				job = new Job(this, item);
+				job.once('complete', () => {
+					_.remove(this.jobs, job);
+					debug(`Removed job "${job.fullid}"`);
+				});
+				this.emit('job', job);
+				this.jobs[jobId] = job;
+			}
+			return job;
+		});
+		return Array.isArray(data) ? result : result[0];
 	}
 
 	getSelectedPaperSize() {
@@ -76,12 +119,16 @@ class Printer extends EventEmitter {
 			libcups.printDirect({
 				data, docname, type, options,
 				printer: this.name,
-				success: jobId => resolve(new Job(this, jobId)),
+				success: jobId => resolve(this._addJob(jobId)),
 				error: reject
 			});
 		});
 	}
 
+	/**
+	 *
+	 * @return {*}
+	 */
 	printDirect() {
 		return this.print(...arguments);
 	}
@@ -93,6 +140,7 @@ class Printer extends EventEmitter {
 	 * @param {Object} [options] JS object with CUPS options, optional
 	 */
 	printFile(filename, {docname, options} = {}) {
+		debug(`print file ${filename}`);
 		if (process.platform === 'win32') {
 			return this.print(require('fs').readFileSync(filename), {docname, options});
 		}
@@ -100,12 +148,11 @@ class Printer extends EventEmitter {
 			libcups.printFile({
 				filename, docname, options,
 				printer: this.name,
-				success: jobId => resolve(new Job(this, jobId)),
+				success: jobId => resolve(this._addJob(jobId)),
 				error: reject
 			});
 		});
 	}
-
 }
 
 module.exports = Printer;

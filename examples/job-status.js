@@ -4,16 +4,21 @@ const util = require('util');
 const npus = require("..");
 
 const printer = npus.getPrinter();
+printer.start();
+
+printer.on('job:complete', () => {
+	printer.stop();
+});
+
+printer.on('job:status', (job, status) => {
+	console.log(`JOB "${job.fullid}" STATUS: ${status}`);
+});
+
 printer.print('print from Node.JS buffer', {
-	type: 'TEXT'	// type: RAW, TEXT, PDF, JPEG, .. depends on platform
-}).then(job => {
-	console.log("sent to printer with ID: " + job.id);
-	console.log('STATUS:', job.descriptor.status);
-	job.on('status', (status) => {
-		console.log('STATUS:', status);
-	});
-	// const info = job.update();
-	// console.log('current job: ', util.inspect(info, {depth: 10, colors: true}));
+	type: 'TEXT',	// type: RAW, TEXT, PDF, JPEG, .. depends on platform
+	options: {
+		copies: 2,
+	}
 }).catch(err => {
 	console.error(err);
 });

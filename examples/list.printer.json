@@ -1,0 +1,49 @@
+{
+	"domain": null,
+	"_events": {},
+	"_eventsCount": 0,
+	"_descriptor": {
+		"name": "Virtual_PDF_Printer",
+		"isDefault": true,
+		"options": {
+			"copies": "1",
+			"device-uri": "pdfwriter:/",
+			"finishings": "3",
+			"job-cancel-after": "10800",
+			"job-hold-until": "no-hold",
+			"job-priority": "50",
+			"job-sheets": "none,none",
+			"marker-change-time": "1970-01-01T00:00:00.000Z",
+			"number-up": "1",
+			"printer-commands": "none",
+			"printer-info": "Virtual PDF Printer",
+			"printer-is-accepting-jobs": "true",
+			"printer-is-shared": "true",
+			"printer-location": "",
+			"printer-make-and-model": "Lisanet PDFwriter",
+			"printer-state": "3",
+			"printer-state-change-time": "2017-05-22T10:48:36.000Z",
+			"printer-state-reasons": "none",
+			"printer-type": "61516",
+			"printer-uri-supported": "ipp://localhost/printers/Virtual_PDF_Printer"
+		},
+		"jobs": [
+			{
+				"id": 129,
+				"name": "/tmp/print_files_3btLL3X/downloadTransformed!externalTaskId=SJu6qRcxW.pdf",
+				"printerName": "Virtual_PDF_Printer",
+				"user": "yifeng",
+				"format": "application/vnd.cups-raster",
+				"priority": 50,
+				"size": 59384,
+				"status": [
+					"unsupported job status: 6"
+				],
+				"completedTime": "1970-01-01T00:00:00.000Z",
+				"creationTime": "2017-05-24T06:50:33.000Z",
+				"processingTime": "2017-05-24T06:51:05.000Z"
+			}
+		],
+		"status": "IDLE"
+	}
+}
