@@ -3,8 +3,8 @@
 const path = require('path');
 const npus = require("..");
 
-const filename = process.argv[2] || path.resolve(__dirname, 'fixtures', 'doc.pdf');
-const printerName = process.argv[3];
+const printerName = process.argv[2];
+const filename = process.argv[3] || path.resolve(__dirname, 'fixtures', 'doc.pdf');
 
 console.log('platform:', process.platform);
 console.log('try to print file: ' + filename);
@@ -15,7 +15,7 @@ printer.on('job:complete', (job) => {
 	console.log(`JOB "${job.fullid}" completed`);
 	printer.stop();
 });
-printer.printFile(filename).then(job => {
+printer.printFile(filename, {options: {copies: 2}}).then(job => {
 	console.log("sent to printer with ID: " + job.id);
 	console.log(job.status);
 }).catch(err => {
