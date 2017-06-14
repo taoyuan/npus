@@ -55,7 +55,7 @@ class Printer extends EventEmitter {
 	}
 
 	update(descriptor) {
-		descriptor = descriptor || libcups.getPrinter(this.name);
+		descriptor = descriptor || this.fetchDescriptor();
 		if (!descriptor) {
 			return this.emit('error', errs.create({
 				message: `Printer "${this.name}" is not exists or has been deleted`,
@@ -76,6 +76,10 @@ class Printer extends EventEmitter {
 		}
 
 		_.forEach(this.jobs, job => job.update());
+	}
+
+	fetchDescriptor() {
+		return libcups.getPrinter(this.name);
 	}
 
 	_addJob(data) {

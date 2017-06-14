@@ -13,17 +13,33 @@
 $ npm install --save npus
 ```
 
-### Getting Started
+### About `out of paper`
 
-...
+`cups` use printer option to report printer options and state include `paper` state. 
+The detail information about printer include paper, marker and toner is [here](https://www.cups.org/doc/api-filter.html#MESSAGES)
 
-### How to Test
+Example of `paper out` state when start printing.
 
-Run one, or a combination of the following commands to lint and test your code:
+```json
+{
+"printer-state-reasons": "media-empty-warning,media-empty-report"
+}
+```
 
-```sh
-$ npm run lint          # Lint the source code with ESLint
-$ npm test              # Lint and Run unit tests with Mocha
+and
+
+```json
+{
+"printer-state-reasons": "media-empty-warning,media-empty-error,media-needed"
+}
+```
+
+After fulfilled paper, the `printer-state-reasons` become:
+
+```json
+{
+"printer-state-reasons": "none"
+}
 ```
 
 ### Reference

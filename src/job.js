@@ -98,6 +98,8 @@ class Job extends events.EventEmitter {
 				// this._schedule.cancel();
 			}
 		}
+
+		return descriptor;
 	}
 
 	is(status) {
