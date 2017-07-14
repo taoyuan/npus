@@ -29,6 +29,10 @@ class Printer extends EventEmitter {
 		return this._descriptor.status;
 	}
 
+	get uri() {
+		return this._uri;
+	}
+
 	get started() {
 		return this._schedule && !this._schedule.isCancelled();
 	}
@@ -51,6 +55,7 @@ class Printer extends EventEmitter {
 	toJSON() {
 		const json = _.omit(this._descriptor, 'jobs');
 		json.jobs = _.map(this.jobs, job => job.descriptor);
+		json.uri = this._uri;
 		return json;
 	}
 
@@ -68,6 +73,7 @@ class Printer extends EventEmitter {
 
 		if (descriptorChanged) {
 			this._descriptor = descriptor;
+			this._uri = decodeURIComponent(descriptor.options['device-uri'])
 			this.emit('update', descriptor, this);
 			if (statusChanged) {
 				this.emit('status', descriptor.status, this);
