@@ -6,6 +6,7 @@ const PromiseA = require('bluebird');
 const libcups = require('printer');
 const {EventEmitter} = require('events');
 const errs = require('errs');
+const lp = require('./lp');
 const Job = require('./job');
 const schedule = require('./utils').schedule;
 const arrify = require('arrify');
@@ -143,25 +144,29 @@ class Printer extends EventEmitter {
 		return this.print(...arguments);
 	}
 
-	/**
-	 *
-	 * @param {String} filename data to printer
-	 * @param {String} [docname] name of document showed in printer status
-	 * @param {Object} [options] JS object with CUPS options, optional
-	 */
-	printFile(filename, {docname, options} = {}) {
-		debug(`print file ${filename}`);
-		if (process.platform === 'win32') {
-			return this.print(require('fs').readFileSync(filename), {docname, options});
-		}
-		return new PromiseA((resolve, reject) => {
-			libcups.printFile({
-				filename, docname, options,
-				printer: this.name,
-				success: jobId => resolve(this._addJob(jobId)),
-				error: reject
-			});
-		});
+	// /**
+	//  *
+	//  * @param {String} filename data to printer
+	//  * @param {String} [docname] name of document showed in printer status
+	//  * @param {Object} [options] JS object with CUPS options, optional
+	//  */
+	// printFile(filename, {docname, options} = {}) {
+	// 	debug(`print file ${filename}`);
+	// 	if (process.platform === 'win32') {
+	// 		return this.print(require('fs').readFileSync(filename), {docname, options});
+	// 	}
+	// 	return new PromiseA((resolve, reject) => {
+	// 		libcups.printFile({
+	// 			filename, docname, options,
+	// 			printer: this.name,
+	// 			success: jobId => resolve(this._addJob(jobId)),
+	// 			error: reject
+	// 		});
+	// 	});
+	// }
+
+	printFile(file, options) {
+		return lp.printFile(this, file, options).then(jobId => this._addJob(jobId));
 	}
 }
 
