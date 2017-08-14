@@ -21,7 +21,7 @@ printer.on('job:complete', (job) => {
 	printer.stop();
 });
 
-printer.printFile(filename, {options: {copies: 2}}).then(job => {
+printer.printFile(filename, {n: 2}).then(job => {
 	console.log("sent to printer with ID: " + job.id);
 
 }).catch(err => {
