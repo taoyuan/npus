@@ -20,9 +20,18 @@ npus.Job = require('./job');
 /**
  * List printers
  */
-npus.list = npus.listPrinters = npus.getPrinters = function () {
+npus.list = function (opts) {
+	opts = opts || {};
 	const descriptors = arrify(libcups.getPrinters());
-	return descriptors.map(descriptor => new Printer(descriptor));
+	descriptors.forEach(d => d.asPrinter = () => new Printer(d));
+	if (opts.simple) {
+		return descriptors;
+	}
+	return descriptors.map(d => d.asPrinter());
+};
+
+npus.listPrinters = npus.getPrinters = function () {
+	return npus.list();
 };
 
 /**
