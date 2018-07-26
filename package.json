@@ -1,6 +1,6 @@
 {
   "name": "npus",
-  "version": "0.3.1",
+  "version": "1.0.0",
   "description": "A node printing utils",
   "main": "./lib/index.js",
   "typings": "./lib/index.d.ts",
