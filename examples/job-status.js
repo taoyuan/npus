@@ -1,20 +1,19 @@
 'use strict';
 
-const util = require('util');
-const npus = require("..");
+const m = require('..').createManager();
 
-const printer = npus.getPrinter();
-printer.start();
+const printer = m.get();
 
 printer.on('job:complete', () => {
-	printer.stop();
+	console.log('job complete');
+	m.stop();
 });
 
 printer.on('job:status', (job, status) => {
-	console.log(`JOB "${job.fullid}" STATUS: ${status}`);
+	console.log(`job "${job.fullid}" status: ${status}`);
 });
 
-printer.print('print from Node.JS buffer', {
+printer.print('Print from Node.JS buffer', {
 	type: 'TEXT',	// type: RAW, TEXT, PDF, JPEG, .. depends on platform
 	options: {
 		copies: 2,
@@ -22,3 +21,7 @@ printer.print('print from Node.JS buffer', {
 }).catch(err => {
 	console.error(err);
 });
+
+m.start();
+
+

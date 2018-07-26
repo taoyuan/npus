@@ -7,20 +7,27 @@
  * LICENSE.txt file in the root directory of this source tree.
  */
 
-const arrify = require('arrify');
-const libcups = require('printer');
+import * as arrify from 'arrify';
+import * as libcups from 'printer';
+import {Manager, ManagerOptions} from "./manager";
+import {Printer} from "./printer";
 
-const Printer = require('./printer');
+export * from './job';
+export * from './printer';
+export * from './manager';
 
-const npus = module.exports = {};
-
-npus.Printer = require('./printer');
-npus.Job = require('./job');
+export function createManager(opts?: ManagerOptions) {
+	return new Manager(opts);
+}
 
 /**
  * List printers
  */
-npus.list = function (opts) {
+export interface ListOptions {
+	simple?: boolean;
+}
+
+export function list(opts?: ListOptions) {
 	opts = opts || {};
 	const descriptors = arrify(libcups.getPrinters());
 	descriptors.forEach(d => d.asPrinter = () => new Printer(d));
@@ -28,56 +35,53 @@ npus.list = function (opts) {
 		return descriptors;
 	}
 	return descriptors.map(d => d.asPrinter());
-};
+}
 
-npus.listPrinters = npus.getPrinters = function () {
-	return npus.list();
-};
+export const listPrinters = list;
+export const getPrinters = list;
 
 /**
  * Return user defined printer, according to https://www.cups.org/documentation.php/doc-2.0/api-cups.html#cupsGetDefault2 :
  * "Applications should use the cupsGetDests and cupsGetDest functions to get the user-defined default printer,
  * as this function does not support the lpoptions-defined default printer"
  */
-npus.defaultPrinterName = npus.getDefaultPrinterName = function () {
-	return libcups.getDefaultPrinterName();
-};
+export const getDefaultPrinterName = libcups.getDefaultPrinterName;
+export const defaultPrinterName = libcups.getDefaultPrinterName;
 
 /**
  * Get supported print format for printDirect
  */
-npus.supportedPrintFormats = npus.getSupportedPrintFormats = function () {
-	return libcups.getSupportedPrintFormats();
-};
+export const getSupportedPrintFormats = libcups.getSupportedPrintFormats;
+export const supportedPrintFormats = libcups.getSupportedPrintFormats;
 
 /**
  * Get possible job command for setJob. It depends on os.
  * @return Array of string. e.g.: DELETE, PAUSE, RESUME
  */
-npus.supportedJobCommands = npus.getSupportedJobCommands = function () {
-	return libcups.getSupportedJobCommands();
-};
+export const getSupportedJobCommands = libcups.getSupportedJobCommands;
+export const supportedJobCommands = libcups.getSupportedJobCommands;
+
 
 /** Find printer info with jobs
  * @param {String} [name] printer name to extract the info
  * @return {Printer}
  *    TODO: to enum all possible attributes
  */
-npus.findPrinter = function (name) {
-	name = name || npus.getDefaultPrinterName();
+export function findPrinter(name?: string): Printer {
+	name = name || getDefaultPrinterName();
 	if (name) {
 		const descriptor = libcups.getPrinter(name);
 		if (descriptor) {
 			return new Printer(descriptor);
 		}
 	}
-	return npus.list()[0];
-};
+	return list()[0];
+}
 
-npus.getPrinter = function (name) {
-	const printer = npus.findPrinter(name);
+export function getPrinter(name?: string): Printer {
+	const printer = findPrinter(name);
 	if (!printer) {
-		throw new Error('Not found printer "' + name + '"');
+		throw new Error(`Not found printer "${name}"`);
 	}
 	return printer;
-};
+}

@@ -3,11 +3,12 @@
 const util = require('util');
 const npus = require("..");
 
+const manager = npus.createManager({autoStart: true});
 const printer = npus.getPrinter();
-printer.start();
+
 printer.on('job:complete', (job) => {
 	console.log(`JOB "${job.fullid}" completed`);
-	printer.stop();
+	manager.stop();
 });
 
 printer.on('job:status', (job, status) => {

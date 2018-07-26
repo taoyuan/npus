@@ -1,6 +1,4 @@
-'use strict';
-
-const assert = require('assert');
+import * as assert from 'assert';
 
 /**
  *
@@ -8,7 +6,7 @@ const assert = require('assert');
  * @param fn
  * @return {{isCancelled: (function(): *), cancel: (function(): *)}}
  */
-exports.schedule = function (ms, fn) {
+export function schedule(ms, fn) {
 	assert(typeof ms === 'number', 'Number "ms" must be a number');
 	assert(typeof fn === 'function', 'Function "fn" is required');
 
@@ -36,4 +34,4 @@ exports.schedule = function (ms, fn) {
 		isCancelled: () => canceled,
 		cancel,
 	};
-};
+}

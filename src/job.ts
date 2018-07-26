@@ -1,19 +1,32 @@
-'use strict';
-
 const debug = require('debug')('npus:job');
-const _ = require('lodash');
-const assert = require('assert');
-const events = require('events');
-const libcups = require('printer');
-const arrify = require('arrify');
 
-const schedule = require('./utils').schedule;
+import * as _ from 'lodash';
+import * as assert from 'assert';
+import {EventEmitter} from 'events';
+import * as libcups from 'printer';
+import * as arrify from 'arrify';
+
+import {Printer} from "./printer";
 
 const EVENTS = ['status', 'printed', 'cancelled', 'complete'];
 
-class Job extends events.EventEmitter {
+export interface JobDescriptor {
+	id: number;
+	status: string;
+}
 
-	constructor(printer, idOrDescriptor) {
+export class Job extends EventEmitter {
+
+	_printer: Printer;
+	_descriptor: JobDescriptor;
+	_eventHandlers: {[name: string]: () => any};
+	_lastUpdate: number;
+
+	id: number;
+	fullid: string;
+	completed: boolean;
+
+	constructor(printer: Printer, idOrDescriptor: number | JobDescriptor) {
 		super();
 		this._printer = printer;
 
@@ -29,7 +42,6 @@ class Job extends events.EventEmitter {
 
 		this.fullid = `${printer.name}-${this.id}`;
 		this.update(descriptor);
-		// this._schedule = schedule(500, () => this.update());
 	}
 
 	get descriptor() {
@@ -66,7 +78,7 @@ class Job extends events.EventEmitter {
 		return this._descriptor ? this._descriptor.status : 'Unknown';
 	}
 
-	update(descriptor) {
+	update(descriptor?: JobDescriptor) {
 		if (!descriptor && this._lastUpdate && this._lastUpdate + 50 > Date.now()) {
 			return;
 		}
@@ -110,7 +122,7 @@ class Job extends events.EventEmitter {
 		return currentStatus.includes(status && status.toUpperCase());
 	}
 
-	fetchDescriptor() {
+	fetchDescriptor(): JobDescriptor {
 		return libcups.getJob(this._printer.name, this.id);
 	}
 
@@ -127,5 +139,3 @@ class Job extends events.EventEmitter {
 function getStatus(descriptor) {
 	return descriptor ? descriptor.status: 'N/A' ;
 }
-
-module.exports = Job;

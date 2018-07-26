@@ -1,7 +1,6 @@
-const spawn = require('child_process').spawn;
-const _ = require('lodash');
-const errs = require('errs');
-const PromiseA = require('bluebird');
+import {spawn} from 'child_process';
+import * as _ from 'lodash';
+import * as errs from 'errs';
 
 /**
  * Describes the parameter options accepted by lp
@@ -166,12 +165,12 @@ const oOptions = {
 	}
 };
 
-const optionsFactory = function (options) {
+const optionsFactory = options => {
 
 	const selGeneralOptions = {};
 
-	_.forEach(generalOptions, function (generalOption, generalOptionId) { // for each of lp available options
-		_.forEach(generalOption.options, function (option) { // for each option possible name
+	_.forEach(generalOptions, (generalOption, generalOptionId) => { // for each of lp available options
+		_.forEach(generalOption.options, option => { // for each option possible name
 			if (typeof options[option] !== 'undefined') { // check of the method options contains the value
 				if (generalOption.expects === '') { // when expects is empty, ommit the options defined value, just add
 					if (options[option]) {
@@ -191,8 +190,8 @@ const optionsFactory = function (options) {
 
 	const selOOptions = {};
 
-	_.forEach(oOptions, function (oOption, oOptionId) { // for each of lp available options
-		_.forEach(oOption.options, function (option) { // for each option possible name
+	_.forEach(oOptions, (oOption, oOptionId) => { // for each of lp available options
+		_.forEach(oOption.options, option => { // for each option possible name
 			if (typeof options[option] !== 'undefined') { // check of the method options contains the value
 				if (oOption.expects === '') { // when expects is empty, ommit the options defined value, just add
 					if (options[option]) {
@@ -214,48 +213,48 @@ const optionsFactory = function (options) {
 
 	if (!_.isEmpty(selOOptions)) {
 		let selOoptionsString = '';
-		_.forEach(selOOptions, function (oOption, oOptionId) {
+		_.forEach(selOOptions, (oOption, oOptionId) => {
 			if (oOptions[oOptionId].expects === '') {
 				if (oOption) {
-					selOoptionsString = selOoptionsString + ' ' + oOptionId;
+					selOoptionsString = `${selOoptionsString} ${oOptionId}`;
 				}
 			} else {
-				selOoptionsString = selOoptionsString + ' ' + oOptionId + '=' + oOption;
+				selOoptionsString = `${selOoptionsString} ${oOptionId}=${oOption}`;
 			}
 		});
-		if (typeof selGeneralOptions.o === 'string') {
-			selGeneralOptions.o = selGeneralOptions.o + selOoptionsString;
+		if (typeof selGeneralOptions['o'] === 'string') {
+			selGeneralOptions['o'] = selGeneralOptions['o'] + selOoptionsString;
 		} else {
-			selGeneralOptions.o = selOoptionsString;
+			selGeneralOptions['o'] = selOoptionsString;
 		}
 	}
 
 	return selGeneralOptions;
 };
 
-const argsFactory = function (options) {
-	const args = [];
-	_.forEach(options, function (optionValue, optionKey) {
+const argsFactory = options => {
+	const args: string[] = [];
+	_.forEach(options, (optionValue, optionKey) => {
 		if (generalOptions[optionKey].expects === '') {
 			if (optionValue) {
-				args.push('-' + optionKey);
+				args.push(`-${optionKey}`);
 			}
 		} else {
-			args.push('-' + optionKey + optionValue);
+			args.push(`-${optionKey}${optionValue}`);
 		}
 
 	});
 	return args;
 };
 
-const buildArgs = function (options) {
+const buildArgs = options => {
 	if (!options) return [];
 	options = optionsFactory(options);
 	return argsFactory(options);
 };
 
 
-exports.printBuffer = (printer, data, options) => {
+export function printBuffer(printer, data, options) {
 	const name = _.isString(printer) ? printer : printer.name;
 	const args = buildArgs(options);
 	args.push('-d', name);
@@ -264,19 +263,21 @@ exports.printBuffer = (printer, data, options) => {
 	lp.stdin.write(data);
 	lp.stdin.end();
 
-	return new PromiseA((resolve, reject) => {
-		let error, jobId;
-		lp.stderr.once('data', function(data) {
+	return new Promise((resolve, reject) => {
+		let error;
+		let jobId;
+		lp.stderr.once('data', data => {
 			error = data.slice(0, data.length - 1);
 		});
 
-		lp.stdout.once('data', function(data) {
-			jobId = parseInt(data
-				.toString()
-				.match(/^request id is .*-(\d+)/)[1]);
+		lp.stdout.once('data', data => {
+			const matched = data.toString().match(/^request id is .*-(\d+)/);
+			if (matched) {
+				jobId = parseInt(matched[1]);
+			}
 		});
 
-		lp.once('exit', function(code) {
+		lp.once('exit', code => {
 			if (0 === code) {
 				resolve(jobId);
 			}
@@ -288,9 +289,9 @@ exports.printBuffer = (printer, data, options) => {
 			}
 		});
 	});
-};
+}
 
-exports.printFile = (printer, file, options) => {
+export function printFile(printer, file, options) {
 	const name = _.isString(printer) ? printer : printer.name;
 	const args = buildArgs(options);
 	args.push('-d', name);
@@ -300,19 +301,21 @@ exports.printFile = (printer, file, options) => {
 
 	const lp = spawn('lp', args);
 
-	return new PromiseA((resolve, reject) => {
-		let error, jobId;
-		lp.stderr.once('data', function(data) {
+	return new Promise((resolve, reject) => {
+		let error;
+		let jobId;
+		lp.stderr.once('data', data => {
 			error = data.slice(0, data.length - 1);
 		});
 
-		lp.stdout.once('data', function(data) {
-			jobId = parseInt(data
-				.toString()
-				.match(/^request id is .*-(\d+)/)[1]);
+		lp.stdout.once('data', data => {
+			const matched = data.toString().match(/^request id is .*-(\d+)/);
+			if (matched) {
+				jobId = parseInt(matched[1]);
+			}
 		});
 
-		lp.once('exit', function(code) {
+		lp.once('exit', code => {
 			if (0 === code) {
 				resolve(jobId);
 			}
@@ -324,4 +327,4 @@ exports.printFile = (printer, file, options) => {
 			}
 		});
 	});
-};
+}
