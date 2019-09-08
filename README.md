@@ -3,7 +3,7 @@
 [![NPM version](http://img.shields.io/npm/v/npus.svg?style=flat-square)](https://www.npmjs.com/package/npus)
 [![NPM downloads](http://img.shields.io/npm/dm/npus.svg?style=flat-square)](https://www.npmjs.com/package/npus)
 [![Build Status](http://img.shields.io/travis/taoyuan/npus/master.svg?style=flat-square)](https://travis-ci.org/taoyuan/npus)
-[![Coverage Status](https://img.shields.io/coveralls/taoyuan/npus.svg?style=flat-square)](https://coveralls.io/taoyuan/npus)
+[![Coverage Status](https://img.shields.io/coveralls/taoyuan/npus.svg?style=flat-square)](https://coveralls.io/taoyuan/npus) [![Greenkeeper badge](https://badges.greenkeeper.io/taoyuan/npus.svg)](https://greenkeeper.io/)
 
 > A node printing utils
 
