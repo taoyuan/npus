@@ -30,23 +30,23 @@
   },
   "homepage": "https://github.com/taoyuan/npus#readme",
   "dependencies": {
-    "arrify": "^1.0.1",
-    "debug": "^3.1.0",
+    "arrify": "^2.0.1",
+    "debug": "^4.1.1",
     "errs": "^0.3.2",
     "lodash": "^4.17.10",
     "printer": "github:tojocky/node-printer"
   },
   "devDependencies": {
-    "@types/arrify": "^1.0.4",
+    "@types/arrify": "^2.0.1",
     "@types/chai": "^4.1.4",
     "@types/inflection": "^1.5.28",
     "@types/mocha": "^5.2.5",
-    "@types/node": "^10.5.3",
+    "@types/node": "^12.7.4",
     "chai": "^4.1.2",
-    "mocha": "^5.2.0",
-    "rimraf": "^2.6.2",
-    "ts-node": "^7.0.0",
-    "typescript": "^2.9.2"
+    "mocha": "^6.2.0",
+    "rimraf": "^3.0.0",
+    "ts-node": "^8.3.0",
+    "typescript": "^3.6.2"
   },
   "engines": {
     "node": ">=8.0.0"
